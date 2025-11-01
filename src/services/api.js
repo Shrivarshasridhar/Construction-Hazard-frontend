@@ -111,27 +111,22 @@
 //     return { success: false, message: "Failed to update settings" };
 //   }
 // };
-
 import axios from 'axios';
 
-// ✅ Use deployed backend URL or fallback to localhost for local dev
+// ✅ Use deployed backend URL or fallback for local dev
 const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 
-// Function to get stored token
 const getToken = () => localStorage.getItem('token');
 
-// Create axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' }
 });
 
-// Add token to every request automatically
+// ✅ Attach token automatically
 axiosInstance.interceptors.request.use(config => {
   const token = getToken();
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
-  }
+  if (token) config.headers['Authorization'] = `Bearer ${token}`;
   return config;
 });
 
@@ -191,7 +186,7 @@ export const generateReport = async (params) => {
 // ==================== PROFILE ====================
 export const fetchProfile = async () => {
   try {
-    const response = await axiosInstance.get('/profile');
+    const response = await axiosInstance.get('/users/profile');
     return response.data;
   } catch (error) {
     console.error("Error fetching profile:", error);
@@ -201,7 +196,7 @@ export const fetchProfile = async () => {
 
 export const updateProfile = async (profileData) => {
   try {
-    const response = await axiosInstance.put('/profile', profileData);
+    const response = await axiosInstance.put('/users/profile', profileData);
     return response.data;
   } catch (error) {
     console.error("Error updating profile:", error);
@@ -212,7 +207,7 @@ export const updateProfile = async (profileData) => {
 // ==================== SETTINGS ====================
 export const updateSettings = async (settingsData) => {
   try {
-    const response = await axiosInstance.put('/settings', settingsData);
+    const response = await axiosInstance.put('/sensors/settings', settingsData);
     return response.data;
   } catch (error) {
     console.error("Error updating settings:", error);
